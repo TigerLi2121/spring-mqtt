@@ -19,9 +19,9 @@ import org.springframework.messaging.MessageHandler;
 
 @EnableIntegration
 @Configuration
-public class MQTTConfig {
+public class MqttConfig {
 
-    public static final Logger log = LoggerFactory.getLogger(MQTTConfig.class);
+    public static final Logger log = LoggerFactory.getLogger(MqttConfig.class);
 
     /**
      * 订阅的bean名称
