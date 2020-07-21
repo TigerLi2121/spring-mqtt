@@ -3,8 +3,10 @@ package com.mm.config;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.integration.annotation.ServiceActivator;
 import org.springframework.integration.channel.DirectChannel;
 import org.springframework.integration.config.EnableIntegration;
@@ -19,9 +21,16 @@ import org.springframework.messaging.MessageHandler;
 
 @EnableIntegration
 @Configuration
+@PropertySource("classpath:/mqtt.properties")
 public class MqttConfig {
 
     public static final Logger log = LoggerFactory.getLogger(MqttConfig.class);
+
+    @Value("${mqtt.url}")
+    private String[] url;
+
+    @Value("${mqtt.topic}")
+    private String[] topic;
 
     /**
      * 订阅的bean名称
@@ -36,7 +45,7 @@ public class MqttConfig {
     public MqttPahoClientFactory mqttClientFactory() {
         DefaultMqttPahoClientFactory factory = new DefaultMqttPahoClientFactory();
         MqttConnectOptions options = new MqttConnectOptions();
-        options.setServerURIs(new String[]{"tcp://195.168.168.150:1883"});
+        options.setServerURIs(url);
 //        options.setUserName("guest");
 //        options.setPassword("guest".toCharArray());
         factory.setConnectionOptions(options);
@@ -74,8 +83,7 @@ public class MqttConfig {
     public MessageProducer inbound() {
         // 同时消费（订阅）所有Topic
         MqttPahoMessageDrivenChannelAdapter adapter = new MqttPahoMessageDrivenChannelAdapter(
-                "mqttConsumer", mqttClientFactory(), "+/#");
-//                "mqttConsumer2", mqttClientFactory(), "$share/g/aaa");  // 共享订阅 $share/g/是共享订阅前缀 真实主题名:aaa
+                "mqttConsumer", mqttClientFactory(), topic);
         adapter.setConverter(new DefaultPahoMessageConverter());
         adapter.setQos(1);
         adapter.setOutputChannel(mqttInboundChannel());
@@ -96,9 +104,8 @@ public class MqttConfig {
     @Bean
     @ServiceActivator(inputChannel = CHANNEL_NAME_IN)
     public MessageHandler handler() {
-
         return message -> {
-            String topic = message.getHeaders().get("mqtt_receivedTopic", String.class);
+            String topic = message.getHeaders().get("mqtt_topic", String.class);
             String payload = String.valueOf(message.getPayload());
             log.info("topic:{}; payload:{}", topic, payload);
         };

@@ -1,12 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="DEBUG">
+<Configuration monitorInterval="10">
     <Appenders>
         <Console name="Console" target="SYSTEM_OUT">
-            <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
+            <!--控制台只输出level及以上级别的信息（onMatch），其他的直接拒绝（onMismatch）-->
+            <ThresholdFilter level="DEBUG" onMatch="ACCEPT" onMismatch="DENY"/>
+            <!--这个都知道是输出日志的格式-->
+            <PatternLayout pattern="%d %-5p %t (%c:%L) - %m%n"/>
         </Console>
     </Appenders>
     <Loggers>
-        <Logger name="org.springframework.beans.factory" level="DEBUG"/>
+        <Logger name="org.springframework" level="INFO"/>
         <Root level="DEBUG">
             <AppenderRef ref="Console"/>
         </Root>

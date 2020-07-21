@@ -2,11 +2,11 @@ package com.mm.config;
 
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.FilterType;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
-@EnableWebMvc
 @Configuration
-@ComponentScan
-public class WebConfig {
-
+@ComponentScan(basePackages = "com.mm",
+        excludeFilters = {@ComponentScan.Filter(type = FilterType.ANNOTATION, value = EnableWebMvc.class)})
+public class RootConfig {
 }
