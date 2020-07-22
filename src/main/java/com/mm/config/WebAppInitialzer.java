@@ -1,12 +1,8 @@
-package com.mm;
+package com.mm.config;
 
-import com.mm.config.MqttConfig;
-import com.mm.config.RootConfig;
-import com.mm.config.WebConfig;
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
 
 public class WebAppInitialzer extends AbstractAnnotationConfigDispatcherServletInitializer {
-
 
     @Override
     protected Class<?>[] getRootConfigClasses() {
@@ -15,7 +11,7 @@ public class WebAppInitialzer extends AbstractAnnotationConfigDispatcherServletI
 
     @Override
     protected Class<?>[] getServletConfigClasses() {
-        return new Class[]{WebConfig.class, MqttConfig.class};
+        return new Class[]{WebConfig.class};
     }
 
     @Override
