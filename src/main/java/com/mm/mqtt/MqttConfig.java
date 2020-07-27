@@ -72,8 +72,7 @@ public class MqttConfig {
     @ServiceActivator(inputChannel = CHANNEL_NAME_OUT)
     public MessageHandler mqttOutbound() {
         MqttPahoMessageHandler messageHandler = new MqttPahoMessageHandler(
-                "mqttProducer",
-                mqttClientFactory());
+                "mqttProducer" + System.currentTimeMillis(), mqttClientFactory());
         messageHandler.setAsync(true);
         messageHandler.setDefaultTopic("topic1");
         return messageHandler;
@@ -86,7 +85,7 @@ public class MqttConfig {
     public MessageProducer inbound() {
         // 同时消费（订阅）所有Topic
         MqttPahoMessageDrivenChannelAdapter adapter = new MqttPahoMessageDrivenChannelAdapter(
-                "mqttConsumer", mqttClientFactory(), topic);
+                "mqttConsumer" + System.currentTimeMillis(), mqttClientFactory(), topic);
         adapter.setConverter(new DefaultPahoMessageConverter());
         adapter.setQos(1);
         adapter.setOutputChannel(mqttInboundChannel());
